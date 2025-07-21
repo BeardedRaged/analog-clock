@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Stock Analog Clock</title>
+  <title>Bigger Accurate Analog Clock</title>
   <style>
     body {
       background: #111;
@@ -16,18 +16,16 @@
 
     .clock {
       position: relative;
-      width: 400px;
-      height: 400px;
-      border: 10px solid #333;
+      width: 600px;
+      height: 600px;
+      border: 12px solid #333;
       border-radius: 50%;
       background: #fefefe url('https://banner2.cleanpng.com/20190610/uvo/kisspng-clock-face-floor-grandfather-clocks-mantel-clock-5cfdeb025353a1.6688118415601446423413.jpg') center/cover no-repeat;
+      box-shadow: 0 0 20px #0008;
     }
 
     .hand {
       position: absolute;
-      width: 50%;
-      height: 2px;
-      background: #000;
       top: 50%;
       left: 50%;
       transform-origin: 0% 50%;
@@ -36,21 +34,21 @@
     }
 
     .hour {
-      width: 30%;
-      height: 6px;
+      width: 25%;
+      height: 8px;
       background: #222;
       z-index: 3;
     }
 
     .minute {
-      width: 45%;
-      height: 4px;
+      width: 35%;
+      height: 6px;
       background: #444;
       z-index: 2;
     }
 
     .second {
-      width: 48%;
+      width: 42%;
       height: 2px;
       background: red;
       z-index: 1;
@@ -58,8 +56,8 @@
 
     .center-dot {
       position: absolute;
-      width: 12px;
-      height: 12px;
+      width: 16px;
+      height: 16px;
       background: #000;
       border-radius: 50%;
       top: 50%;
@@ -80,13 +78,13 @@
   <script>
     function updateClock() {
       const now = new Date();
-      const seconds = now.getSeconds();
-      const minutes = now.getMinutes();
-      const hours = now.getHours();
+      const sec = now.getSeconds();
+      const min = now.getMinutes();
+      const hour = now.getHours();
 
-      const secDeg = seconds * 6;
-      const minDeg = (minutes + seconds / 60) * 6;
-      const hourDeg = (hours % 12 + minutes / 60) * 30;
+      const secDeg = sec * 6;
+      const minDeg = (min + sec / 60) * 6;
+      const hourDeg = (hour % 12 + min / 60 + sec / 3600) * 30;
 
       document.getElementById("secondHand").style.transform = `rotate(${secDeg}deg)`;
       document.getElementById("minuteHand").style.transform = `rotate(${minDeg}deg)`;
@@ -94,7 +92,7 @@
     }
 
     setInterval(updateClock, 1000);
-    updateClock();
+    updateClock(); // run immediately on load
   </script>
 </body>
 </html>
