@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Bigger Accurate Analog Clock</title>
+  <title>Eastern Time Analog Clock</title>
   <style>
     body {
       background: #111;
@@ -29,30 +29,13 @@
       top: 50%;
       left: 50%;
       transform-origin: 0% 50%;
-      transform: rotate(90deg);
       border-radius: 2px;
+      transition: transform 0.1s linear;
     }
 
-    .hour {
-      width: 25%;
-      height: 8px;
-      background: #222;
-      z-index: 3;
-    }
-
-    .minute {
-      width: 35%;
-      height: 6px;
-      background: #444;
-      z-index: 2;
-    }
-
-    .second {
-      width: 42%;
-      height: 2px;
-      background: red;
-      z-index: 1;
-    }
+    .hour   { width: 25%; height: 8px; background: #222; z-index: 3; }
+    .minute { width: 35%; height: 6px; background: #444; z-index: 2; }
+    .second { width: 42%; height: 2px; background: red;  z-index: 1; }
 
     .center-dot {
       position: absolute;
@@ -76,23 +59,49 @@
   </div>
 
   <script>
-    function updateClock() {
+    const hourHand = document.getElementById("hourHand");
+    const minuteHand = document.getElementById("minuteHand");
+    const secondHand = document.getElementById("secondHand");
+
+    // Formatter to get Eastern Time parts
+    const options = {
+      timeZone: 'America/New_York',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    };
+
+    const getEasternTime = () => {
       const now = new Date();
-      const sec = now.getSeconds();
-      const min = now.getMinutes();
-      const hour = now.getHours();
+      const parts = new Intl.DateTimeFormat('en-US', options).formatToParts(now);
+      const get = type => parseInt(parts.find(p => p.type === type).value, 10);
 
-      const secDeg = sec * 6;
-      const minDeg = (min + sec / 60) * 6;
-      const hourDeg = (hour % 12 + min / 60 + sec / 3600) * 30;
+      // Reconstruct Eastern time as a virtual date
+      const eastern = new Date();
+      eastern.setUTCHours(get('hour'), get('minute'), get('second'), now.getMilliseconds());
+      return eastern;
+    };
 
-      document.getElementById("secondHand").style.transform = `rotate(${secDeg}deg)`;
-      document.getElementById("minuteHand").style.transform = `rotate(${minDeg}deg)`;
-      document.getElementById("hourHand").style.transform = `rotate(${hourDeg}deg)`;
+    function updateClock() {
+      const now = getEasternTime();
+
+      const seconds = now.getSeconds() + now.getMilliseconds() / 1000;
+      const minutes = now.getMinutes() + seconds / 60;
+      const hours = (now.getHours() % 12) + minutes / 60;
+
+      const secDeg = seconds * 6;
+      const minDeg = minutes * 6;
+      const hourDeg = hours * 30;
+
+      secondHand.style.transform = `rotate(${secDeg}deg)`;
+      minuteHand.style.transform = `rotate(${minDeg}deg)`;
+      hourHand.style.transform = `rotate(${hourDeg}deg)`;
+
+      requestAnimationFrame(updateClock);
     }
 
-    setInterval(updateClock, 1000);
-    updateClock(); // run immediately on load
+    requestAnimationFrame(updateClock);
   </script>
 </body>
 </html>
