@@ -1,207 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Analog Clock</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
-
-    :root {
-      --bg-color: #0e0e0e;
-      --clock-bg: #1a1a1a;
-      --text-color: #ffffff;
-      --ring-color: rgba(255, 255, 255, 0.05);
-      --hand-hour: #ffdd00;
-      --hand-minute: #00ffa6;
-      --hand-second: #ff3c74;
-      --toggle-bg: #2d2d2d;
-      --toggle-ball: #f9e000;
-    }
-
-    body.light {
-      --bg-color: #f4f4f4;
-      --clock-bg: #ffffff;
-      --text-color: #1c1c1c;
-      --ring-color: rgba(0, 0, 0, 0.05);
-      --toggle-bg: #e0e0e0;
-      --toggle-ball: #ffd700;
-    }
-
-    body {
-      margin: 0;
-      background: var(--bg-color);
-      color: var(--text-color);
-      font-family: 'Orbitron', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      transition: background 0.5s;
-    }
-
-    .toggle {
-      position: absolute;
-      top: 30px;
-      left: 40px;
-      width: 80px;
-      height: 36px;
-      background: var(--toggle-bg);
-      border-radius: 18px;
-      display: flex;
-      align-items: center;
-      padding: 4px;
-      box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
-      cursor: pointer;
-    }
-
-    .toggle-ball {
-      width: 28px;
-      height: 28px;
-      background: var(--toggle-ball);
-      border-radius: 50%;
-      transition: transform 0.3s;
-    }
-
-    body.light .toggle-ball {
-      transform: translateX(44px);
-    }
-
-    .clock {
-      width: 400px;
-      height: 400px;
-      background: var(--clock-bg);
-      border-radius: 50%;
-      position: relative;
-      box-shadow: 0 0 60px rgba(0, 0, 0, 0.6);
-    }
-
-    .ring {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      border: 1px solid var(--ring-color);
-      border-radius: 50%;
-      top: 0;
-      left: 0;
-    }
-
-    .center {
-      position: absolute;
-      width: 14px;
-      height: 14px;
-      background: var(--text-color);
-      border-radius: 50%;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 10;
-    }
-
-    .hand {
-      position: absolute;
-      bottom: 50%;
-      left: 50%;
-      transform-origin: bottom;
-      transform: translateX(-50%) rotate(0deg);
-      border-radius: 4px;
-    }
-
-    .hour {
-      height: 90px;
-      width: 6px;
-      background: var(--hand-hour);
-      z-index: 3;
-    }
-
-    .minute {
-      height: 120px;
-      width: 4px;
-      background: var(--hand-minute);
-      z-index: 2;
-    }
-
-    .second {
-      height: 140px;
-      width: 2px;
-      background: var(--hand-second);
-      z-index: 1;
-    }
-
-    .numbers {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-    }
-
-    .number {
-      position: absolute;
-      width: 30px;
-      text-align: center;
-      top: 50%;
-      left: 50%;
-      transform-origin: center;
-      font-size: 1rem;
-      font-weight: bold;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Analog Clock</title>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #222;
+  }
+  #clock {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    background: url('https://www.american-time.com/wp-content/uploads/2024/07/01-15in-Black-Plastic-Round-Surface-Mount.jpg') no-repeat center center;
+    background-size: contain;
+  }
+  canvas {
+    position: absolute;
+    top: 0; left: 0;
+  }
+</style>
 </head>
 <body>
-  <div class="toggle" onclick="toggleTheme()">
-    <div class="toggle-ball"></div>
-  </div>
-  <div class="clock">
-    <div class="ring"></div>
-    <div class="ring" style="transform: scale(0.9);"></div>
-    <div class="ring" style="transform: scale(0.8);"></div>
-    <div class="center"></div>
-    <div class="hand hour" id="hour-hand"></div>
-    <div class="hand minute" id="minute-hand"></div>
-    <div class="hand second" id="second-hand"></div>
-    <div class="numbers" id="numbers"></div>
+  <div id="clock">
+    <canvas id="clockCanvas" width="300" height="300"></canvas>
   </div>
 
   <script>
-    function toggleTheme() {
-      document.body.classList.toggle("light");
+    const canvas = document.getElementById('clockCanvas');
+    const ctx = canvas.getContext('2d');
+    const radius = canvas.height / 2;
+    ctx.translate(radius, radius); // Move to center
+    const clockRadius = radius * 0.90;
+
+    function drawClock() {
+      ctx.clearRect(-radius, -radius, canvas.width, canvas.height);
+      drawHands();
     }
 
-    function updateClock() {
+    function drawHands() {
       const now = new Date();
+
       const hour = now.getHours() % 12;
       const minute = now.getMinutes();
       const second = now.getSeconds();
 
-      const hourDeg = (360 / 12) * hour + (30 / 60) * minute;
-      const minuteDeg = (360 / 60) * minute + (6 / 60) * second;
-      const secondDeg = (360 / 60) * second;
+      // Calculate angles
+      const hourAngle = ((hour + minute / 60) * Math.PI) / 6;
+      const minuteAngle = (minute * Math.PI) / 30;
+      const secondAngle = (second * Math.PI) / 30;
 
-      document.getElementById("hour-hand").style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
-      document.getElementById("minute-hand").style.transform = `translateX(-50%) rotate(${minuteDeg}deg)`;
-      document.getElementById("second-hand").style.transform = `translateX(-50%) rotate(${secondDeg}deg)`;
+      // Hour hand
+      drawHand(hourAngle, clockRadius * 0.5, 7);
+
+      // Minute hand
+      drawHand(minuteAngle, clockRadius * 0.75, 5);
+
+      // Second hand
+      drawHand(secondAngle, clockRadius * 0.85, 2, 'red');
     }
 
-    function createNumbers() {
-      const container = document.getElementById("numbers");
-      for (let i = 1; i <= 12; i++) {
-        const el = document.createElement("div");
-        el.className = "number";
-        const angle = (360 / 12) * i;
-        const radius = 170; // distance from center
-        const x = radius * Math.sin((angle * Math.PI) / 180);
-        const y = -radius * Math.cos((angle * Math.PI) / 180);
-        el.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px)`;
-        el.innerText = i;
-        container.appendChild(el);
-      }
+    function drawHand(pos, length, width, color = '#000') {
+      ctx.beginPath();
+      ctx.lineWidth = width;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = color;
+      ctx.moveTo(0, 0);
+      ctx.rotate(pos);
+      ctx.lineTo(0, -length);
+      ctx.stroke();
+      ctx.rotate(-pos);
     }
 
-    createNumbers();
-    setInterval(updateClock, 1000);
-    updateClock();
+    setInterval(drawClock, 1000);
+    drawClock();
   </script>
 </body>
 </html>
