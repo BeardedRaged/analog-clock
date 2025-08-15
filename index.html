@@ -1,98 +1,54 @@
 <!DOCTYPE html>
+<!-- Royal Tutorials -->
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Analog Clock with PNG Face</title>
-  <style>
-    body {
-      margin: 0;
-      background: #111;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-
-    .clock {
-      width: 600px;
-      height: 600px;
-      background: url('https://banner2.cleanpng.com/20190610/uvo/kisspng-clock-face-floor-grandfather-clocks-mantel-clock-5cfdeb025353a1.6688118415601446423413.jpg') center/cover no-repeat;
-      border-radius: 50%;
-      position: relative;
-      box-shadow: 0 0 60px rgba(0, 0, 0, 0.6);
-      margin-top: 192px; /* Moves clock down ~3 inches */
-    }
-
-    .center {
-      position: absolute;
-      width: 25px;
-      height: 25px;
-      background: #000;
-      border-radius: 50%;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 10;
-    }
-
-    .hand {
-      position: absolute;
-      bottom: 50%;
-      left: 50%;
-      transform-origin: bottom;
-      transform: translateX(-50%) rotate(0deg);
-      border-radius: 4px;
-    }
-
-    .hour {
-      height: 140px;  /* longer */
-      width: 8px;
-      background: black;
-      z-index: 3;
-    }
-
-    .minute {
-      height: 270px;  /* longer */
-      width: 6px;
-      background: black;
-      z-index: 2;
-    }
-
-    .second {
-      height: 200px;  /* longer */
-      width: 3px;
-      background: red;
-      z-index: 1;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analog Clock | JavaScript</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="clock">
-    <div class="center"></div>
-    <div class="hand hour" id="hour-hand"></div>
-    <div class="hand minute" id="minute-hand"></div>
-    <div class="hand second" id="second-hand"></div>
-  </div>
+    <div class="clock">
+        <div class="number" style="--n:1"><b>1</b></div>
+        <div class="number" style="--n:2"><b>2</b></div>
+        <div class="number" style="--n:3"><b>3</b></div>
+        <div class="number" style="--n:4"><b>4</b></div>
+        <div class="number" style="--n:5"><b>5</b></div>
+        <div class="number" style="--n:6"><b>6</b></div>
+        <div class="number" style="--n:7"><b>7</b></div>
+        <div class="number" style="--n:8"><b>8</b></div>
+        <div class="number" style="--n:9"><b>9</b></div>
+        <div class="number" style="--n:10"><b>10</b></div>
+        <div class="number" style="--n:11"><b>11</b></div>
+        <div class="number" style="--n:12"><b>12</b></div>
+        <div class="hour-hand" id="hour-hand"></div>
+        <div class="minute-hand" id="minute-hand"></div>
+        <div class="second-hand" id="second-hand"></div>
+        <div class="center-dot"></div>
+    </div>
+    <script>
+        const hourHand = document.getElementById("hour-hand");
+        const minuteHand = document.getElementById("minute-hand");
+        const secondHand = document.getElementById("second-hand");
 
-  <script>
-    function updateClock() {
-      const now = new Date();
-      const hour = now.getHours() % 12;
-      const minute = now.getMinutes();
-      const second = now.getSeconds();
+        function clockTick(){
+            const date = new Date();
+            const seconds = date.getSeconds() / 60;
+            const minutes = (seconds + date.getMinutes()) / 60;
+            const hours = (minutes + date.getHours()) / 12;
 
-      const hourDeg = (360 / 12) * hour + (30 / 60) * minute;
-      const minuteDeg = (360 / 60) * minute + (6 / 60) * second;
-      const secondDeg = (360 / 60) * second;
+            rotateClockHand(secondHand, seconds);
+            rotateClockHand(minuteHand, minutes);
+            rotateClockHand(hourHand, hours);
+        }
 
-      document.getElementById("hour-hand").style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
-      document.getElementById("minute-hand").style.transform = `translateX(-50%) rotate(${minuteDeg}deg)`;
-      document.getElementById("second-hand").style.transform = `translateX(-50%) rotate(${secondDeg}deg)`;
-    }
 
-    setInterval(updateClock, 1000);
-    updateClock();
-  </script>
+        function rotateClockHand(element, rotation){
+            element.style.setProperty('--rotate', rotation * 360);
+        }
+
+        setInterval(clockTick, 1000);
+    </script>
 </body>
 </html>
