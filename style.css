@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neon Analog Clock</title>
+<style>
 * {
     margin: 0;
     padding: 0;
@@ -13,16 +20,14 @@ body {
 }
 .clock {
     position: relative;
-    width: 500px;          /* change this to resize clock */
-    aspect-ratio: 1;       /* keeps circle perfect */
+    width: 500px; /* adjustable */
+    aspect-ratio: 1;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     background: radial-gradient(circle, #05263c, #000d1a);
-
-    /* number positioning */
-    --r: calc(50% - 8%);   /* push numbers to edge proportionally */
+    --r: calc(50% - 8%);
     --nudgeX: 0px;
     --nudgeY: 0px;
 }
@@ -36,7 +41,7 @@ body {
     z-index: -1;
 }
 
-/* --- AUTO-SCALED NUMBERS WITH GLOW --- */
+/* Numbers */
 .number {
     position: absolute;
     top: 50%;
@@ -44,7 +49,6 @@ body {
     font-size: calc(8% + 8px);
     color: #00daff;
     text-shadow: 0 0 calc(3% + 2px) #ee00ff, 0 0 calc(6% + 4px) #00daff;
-
     transform:
         translate(-50%, -50%)
         rotate(calc(30deg * var(--n)))
@@ -57,10 +61,8 @@ body {
     transform: rotate(calc(-30deg * var(--n)));
 }
 
-/* --- HANDS WITH GLOW --- */
-.hour-hand,
-.minute-hand,
-.second-hand {
+/* Hands */
+.hour-hand, .minute-hand, .second-hand {
     position: absolute;
     left: 50%;
     bottom: 50%;
@@ -86,13 +88,62 @@ body {
     background: linear-gradient(to top, #00d9ff, #ee00ff);
 }
 
-/* --- CENTER DOT WITH GLOW --- */
+/* Center dot */
 .center-dot {
     position: absolute;
     width: 5%;
     height: 5%;
     background-color: #ee00ff;
-    border: calc(1% + 3px) solid #00d9ff;
+    border: calc(1% + 3px) solid #00daff;
     border-radius: 50%;
     box-shadow: 0 0 calc(3% + 2px) #ee00ff, 0 0 calc(5% + 4px) #00daff;
 }
+</style>
+</head>
+<body>
+<div class="clock">
+    <div class="number" style="--n:1"><b>1</b></div>
+    <div class="number" style="--n:2"><b>2</b></div>
+    <div class="number" style="--n:3"><b>3</b></div>
+    <div class="number" style="--n:4"><b>4</b></div>
+    <div class="number" style="--n:5"><b>5</b></div>
+    <div class="number" style="--n:6"><b>6</b></div>
+    <div class="number" style="--n:7"><b>7</b></div>
+    <div class="number" style="--n:8"><b>8</b></div>
+    <div class="number" style="--n:9"><b>9</b></div>
+    <div class="number" style="--n:10"><b>10</b></div>
+    <div class="number" style="--n:11"><b>11</b></div>
+    <div class="number" style="--n:12"><b>12</b></div>
+    <div class="hour-hand" id="hour-hand"></div>
+    <div class="minute-hand" id="minute-hand"></div>
+    <div class="second-hand" id="second-hand"></div>
+    <div class="center-dot"></div>
+</div>
+
+<script>
+const hourHand = document.getElementById("hour-hand");
+const minuteHand = document.getElementById("minute-hand");
+const secondHand = document.getElementById("second-hand");
+
+function clockTick() {
+    const date = new Date();
+    const ms = date.getMilliseconds() / 1000;
+    const seconds = (date.getSeconds() + ms) / 60;
+    const minutes = (date.getMinutes() + seconds) / 60;
+    const hours = (date.getHours() % 12 + minutes) / 12;
+
+    rotateClockHand(secondHand, seconds);
+    rotateClockHand(minuteHand, minutes);
+    rotateClockHand(hourHand, hours);
+
+    requestAnimationFrame(clockTick);
+}
+
+function rotateClockHand(element, rotation) {
+    element.style.setProperty('--rotate', rotation * 360);
+}
+
+requestAnimationFrame(clockTick);
+</script>
+</body>
+</html>
