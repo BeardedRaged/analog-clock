@@ -37,7 +37,7 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: rotate(calc(30deg * var(--n))) translateY(-220px);
+    transform: rotate(calc(30deg * var(--n))) translateY(-220px) translate(-50%, -50%);
     transform-origin: center;
     font-size: 40px;
     color: #00daff;
@@ -85,3 +85,4 @@ body {
     border: 6px solid #00d9ff;
     border-radius: 50%;
 }
+
