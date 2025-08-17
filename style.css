@@ -9,68 +9,55 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: radial-grad* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-}
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
     background: radial-gradient(circle, #0b456b, #021c37);
 }
 .clock {
     position: relative;
-    width: 500px;
-    height: 500px;
+    width: 500px;          /* change this to resize clock */
+    aspect-ratio: 1;       /* keeps circle perfect */
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     background: radial-gradient(circle, #05263c, #000d1a);
 
-    /* number positioning controls */
-    --r: 220px;       /* radius from center to numbers */
-    --nudgeX: 0px;    /* adjust horizontally if needed */
-    --nudgeY: 0px;    /* adjust vertically if needed */
+    /* number positioning */
+    --r: calc(50% - 8%);   /* push numbers to edge proportionally */
+    --nudgeX: 0px;
+    --nudgeY: 0px;
 }
 .clock::before {
     content: '';
     position: absolute;
-    width: 525px;
-    height: 525px;
+    inset: -2%;
     background: linear-gradient(to right, #00daff, #ee00ff);
     border-radius: 50%;
-    box-shadow: 0 0 15px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 0 calc(3% + 2px) calc(3% + 2px) rgba(0,0,0,0.2);
     z-index: -1;
 }
 
-/* --- FIXED NUMBERS --- */
+/* --- AUTO-SCALED NUMBERS WITH GLOW --- */
 .number {
     position: absolute;
     top: 50%;
     left: 50%;
-    font-size: 40px;
+    font-size: calc(8% + 8px);
     color: #00daff;
-    text-shadow: 0 0 12px #ee00ff;
+    text-shadow: 0 0 calc(3% + 2px) #ee00ff, 0 0 calc(6% + 4px) #00daff;
 
-    /* placement order matters */
     transform:
-        translate(-50%, -50%)                /* center anchor */
-        rotate(calc(30deg * var(--n)))       /* angle */
-        translateY(calc(-1 * var(--r)))      /* push outward */
-        translate(var(--nudgeX), var(--nudgeY)); /* fine-tune */
+        translate(-50%, -50%)
+        rotate(calc(30deg * var(--n)))
+        translateY(calc(-1 * var(--r)))
+        translate(var(--nudgeX), var(--nudgeY));
     transform-origin: center;
 }
 .number b {
     display: inline-block;
-    transform: rotate(calc(-30deg * var(--n))); /* keep upright */
+    transform: rotate(calc(-30deg * var(--n)));
 }
 
-/* --- HANDS --- */
+/* --- HANDS WITH GLOW --- */
 .hour-hand,
 .minute-hand,
 .second-hand {
@@ -81,116 +68,31 @@ body {
     transform: translate(-50%) rotate(calc(var(--rotate) * 1deg));
     transform-origin: bottom;
     border-radius: 30px 30px 0 0;
+    box-shadow: 0 0 calc(1% + 2px) #00daff, 0 0 calc(2% + 4px) #ee00ff;
 }
 .hour-hand {
-    width: 12px;
-    height: 130px;
+    width: calc(2.5% + 6px);
+    height: 26%;
     background: linear-gradient(#00d9ff, #ee00ff);
 }
 .minute-hand {
-    width: 12px;
-    height: 190px;
+    width: calc(2.5% + 6px);
+    height: 38%;
     background: linear-gradient(to top, #00d9ff, #ee00ff);
 }
 .second-hand {
-    width: 6px;
-    height: 210px;
+    width: calc(1% + 4px);
+    height: 42%;
     background: linear-gradient(to top, #00d9ff, #ee00ff);
 }
 
-/* --- CENTER DOT --- */
+/* --- CENTER DOT WITH GLOW --- */
 .center-dot {
     position: absolute;
-    width: 25px;
-    height: 25px;
+    width: 5%;
+    height: 5%;
     background-color: #ee00ff;
-    border: 6px solid #00d9ff;
+    border: calc(1% + 3px) solid #00d9ff;
     border-radius: 50%;
-}
-ient(circle, #0b456b, #021c37);
-}
-.clock {
-    position: relative;
-    width: 500px;
-    height: 500px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: radial-gradient(circle, #05263c, #000d1a);
-
-    /* number positioning controls */
-    --r: 220px;       /* radius from center to numbers */
-    --nudgeX: 0px;    /* adjust horizontally if needed */
-    --nudgeY: 0px;    /* adjust vertically if needed */
-}
-.clock::before {
-    content: '';
-    position: absolute;
-    width: 525px;
-    height: 525px;
-    background: linear-gradient(to right, #00daff, #ee00ff);
-    border-radius: 50%;
-    box-shadow: 0 0 15px 15px rgba(0,0,0,0.2);
-    z-index: -1;
-}
-
-/* --- FIXED NUMBERS --- */
-.number {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    font-size: 40px;
-    color: #00daff;
-    text-shadow: 0 0 12px #ee00ff;
-
-    /* placement order matters */
-    transform:
-        translate(-50%, -50%)                /* center anchor */
-        rotate(calc(30deg * var(--n)))       /* angle */
-        translateY(calc(-1 * var(--r)))      /* push outward */
-        translate(var(--nudgeX), var(--nudgeY)); /* fine-tune */
-    transform-origin: center;
-}
-.number b {
-    display: inline-block;
-    transform: rotate(calc(-30deg * var(--n))); /* keep upright */
-}
-
-/* --- HANDS --- */
-.hour-hand,
-.minute-hand,
-.second-hand {
-    position: absolute;
-    left: 50%;
-    bottom: 50%;
-    --rotate: 0;
-    transform: translate(-50%) rotate(calc(var(--rotate) * 1deg));
-    transform-origin: bottom;
-    border-radius: 30px 30px 0 0;
-}
-.hour-hand {
-    width: 12px;
-    height: 130px;
-    background: linear-gradient(#00d9ff, #ee00ff);
-}
-.minute-hand {
-    width: 12px;
-    height: 190px;
-    background: linear-gradient(to top, #00d9ff, #ee00ff);
-}
-.second-hand {
-    width: 6px;
-    height: 210px;
-    background: linear-gradient(to top, #00d9ff, #ee00ff);
-}
-
-/* --- CENTER DOT --- */
-.center-dot {
-    position: absolute;
-    width: 25px;
-    height: 25px;
-    background-color: #ee00ff;
-    border: 6px solid #00d9ff;
-    border-radius: 50%;
+    box-shadow: 0 0 calc(3% + 2px) #ee00ff, 0 0 calc(5% + 4px) #00daff;
 }
